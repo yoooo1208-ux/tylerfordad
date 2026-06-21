@@ -330,6 +330,38 @@ tbody tr:last-child {
     }
     
     th, td {
-        padding: 1rem;
+        padding: 0.5rem 0.3rem; /* Even smaller padding on mobile */
+        font-size: 0.8rem;
+    }
+    
+    .table-container {
+        overflow-x: auto; /* Enable horizontal scrolling ONLY on mobile */
+        -webkit-overflow-scrolling: touch;
+    }
+    
+    /* Make Code and Name columns sticky when scrolling horizontally */
+    th:nth-child(2), td:nth-child(2) {
+        position: sticky;
+        left: 0;
+        background: var(--bg-surface);
+        z-index: 20;
+    }
+    
+    th:nth-child(3), td:nth-child(3) {
+        position: sticky;
+        left: 45px; /* Approx width of the code column */
+        background: var(--bg-surface);
+        z-index: 20;
+    }
+    
+    /* Fix header overlapping for sticky columns */
+    th:nth-child(2), th:nth-child(3) {
+        z-index: 30;
+        background: rgba(0, 0, 0, 0.8);
+    }
+    
+    /* Hide Rank on mobile to save space */
+    th:nth-child(1), td:nth-child(1) {
+        display: none;
     }
 }
