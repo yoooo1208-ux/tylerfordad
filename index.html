@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>台股平均每筆張數追蹤</title>
+    <meta name="description" content="每日更新台股平均每筆張數，自動扣除零股並排除 ETF，依據成交金額排序，讓您輕鬆掌握市場大戶動向。">
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="background-elements">
+        <div class="glow-blob blob-1"></div>
+        <div class="glow-blob blob-2"></div>
+    </div>
+
+    <div class="container">
+        <header>
+            <h1>Market Insights</h1>
+            <p class="subtitle">台股平均每筆張數追蹤 (排除零股 & ETF)</p>
+            <div class="status-bar">
+                <div class="update-time" id="update-time">
+                    <span class="indicator"></span> 資料載入中...
+                </div>
+                <div class="search-box">
+                    <input type="text" id="search-input" placeholder="搜尋股票代號或名稱...">
+                </div>
+            </div>
+        </header>
+
+        <main>
+            <div class="table-container">
+                <table id="data-table">
+                    <thead>
+                        <tr>
+                            <th>排行</th>
+                            <th>代號</th>
+                            <th>名稱</th>
+                            <th>市場</th>
+                            <th>收盤價</th>
+                            <th class="sortable" data-sort="value">成交金額 (元) <span class="sort-icon desc">▼</span></th>
+                            <th class="sortable" data-sort="avg_lots">每筆張數 (張) <span class="sort-icon"></span></th>
+                            <th class="sortable" data-sort="reg_vol">整股張數 <span class="sort-icon"></span></th>
+                            <th>整股筆數</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table-body">
+                        <!-- 資料由 JS 動態載入 -->
+                    </tbody>
+                </table>
+            </div>
+            
+            <div id="loading" class="loading-state">
+                <div class="spinner"></div>
+                <p>正在分析最新市場數據...</p>
+            </div>
+            <div id="no-data" class="no-data-state hidden">
+                <p>找不到符合的股票</p>
+            </div>
+        </main>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

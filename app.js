@@ -1,0 +1,162 @@
+document.addEventListener('DOMContentLoaded', () => {
+    const tableBody = document.getElementById('table-body');
+    const updateTimeEl = document.getElementById('update-time');
+    const searchInput = document.getElementById('search-input');
+    const loadingState = document.getElementById('loading');
+    const noDataState = document.getElementById('no-data');
+    const sortHeaders = document.querySelectorAll('.sortable');
+
+    let stockData = [];
+    let filteredData = [];
+    let currentSort = { key: 'avg_lots', desc: true };
+
+    // Format numbers with commas
+    const formatNumber = (num) => {
+        return new Intl.NumberFormat('zh-TW').format(num);
+    };
+
+    // Format large numbers (e.g., billions)
+    const formatValue = (num) => {
+        if (num >= 100000000) {
+            return (num / 100000000).toFixed(2) + ' 億';
+        } else if (num >= 10000) {
+            return (num / 10000).toFixed(2) + ' 萬';
+        }
+        return formatNumber(num);
+    };
+
+    // Render table
+    const renderTable = () => {
+        tableBody.innerHTML = '';
+        
+        if (filteredData.length === 0) {
+            noDataState.classList.remove('hidden');
+            return;
+        }
+        
+        noDataState.classList.add('hidden');
+
+        filteredData.forEach((item, index) => {
+            const tr = document.createElement('tr');
+            
+            const marketClass = item.market === '上市' ? 'twse' : 'tpex';
+            
+            tr.innerHTML = `
+                <td class="rank">${index + 1}</td>
+                <td class="code">${item.code}</td>
+                <td class="name">${item.name}</td>
+                <td><span class="market-badge ${marketClass}">${item.market}</span></td>
+                <td>${item.close.toFixed(2)}</td>
+                <td class="value-column">${formatValue(item.value)}</td>
+                <td class="highlight-avg">${item.avg_lots_per_trade.toFixed(2)}</td>
+                <td class="value-column">${formatNumber(Math.round(item.reg_vol_lots))}</td>
+                <td class="value-column">${formatNumber(item.reg_trades)}</td>
+            `;
+            tableBody.appendChild(tr);
+        });
+    };
+
+    // Sort data
+    const sortData = (key, desc) => {
+        filteredData.sort((a, b) => {
+            let valA = a[key];
+            let valB = b[key];
+            
+            // Map custom keys to data properties
+            if (key === 'avg_lots') valA = a.avg_lots_per_trade, valB = b.avg_lots_per_trade;
+            if (key === 'reg_vol') valA = a.reg_vol_lots, valB = b.reg_vol_lots;
+
+            if (valA < valB) return desc ? 1 : -1;
+            if (valA > valB) return desc ? -1 : 1;
+            return 0;
+        });
+    };
+
+    // Handle sort click
+    sortHeaders.forEach(header => {
+        header.addEventListener('click', () => {
+            const key = header.getAttribute('data-sort');
+            
+            // Update sort state
+            if (currentSort.key === key) {
+                currentSort.desc = !currentSort.desc;
+            } else {
+                currentSort.key = key;
+                currentSort.desc = true;
+            }
+
+            // Update UI
+            sortHeaders.forEach(h => {
+                const icon = h.querySelector('.sort-icon');
+                icon.className = 'sort-icon';
+                icon.textContent = '';
+                if (h.getAttribute('data-sort') === key) {
+                    icon.classList.add(currentSort.desc ? 'desc' : 'asc');
+                    icon.textContent = currentSort.desc ? '▼' : '▲';
+                }
+            });
+
+            sortData(currentSort.key, currentSort.desc);
+            renderTable();
+        });
+    });
+
+    // Handle search
+    searchInput.addEventListener('input', (e) => {
+        const term = e.target.value.toLowerCase().trim();
+        
+        if (term === '') {
+            filteredData = [...stockData];
+        } else {
+            filteredData = stockData.filter(item => 
+                item.code.toLowerCase().includes(term) || 
+                item.name.toLowerCase().includes(term)
+            );
+        }
+        
+        sortData(currentSort.key, currentSort.desc);
+        renderTable();
+    });
+
+    // Fetch data
+    const fetchData = async () => {
+        try {
+            // In a real GitHub pages setup, this fetches data.json from the same directory
+            const response = await fetch('data.json');
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            
+            const result = await response.json();
+            stockData = result.data;
+            filteredData = [...stockData];
+            
+            // Default sort by avg_lots desc
+            sortData('avg_lots', true);
+            
+            // Update initial UI state for sort icons
+            sortHeaders.forEach(h => {
+                const icon = h.querySelector('.sort-icon');
+                icon.className = 'sort-icon';
+                icon.textContent = '';
+                if (h.getAttribute('data-sort') === 'avg_lots') {
+                    icon.classList.add('desc');
+                    icon.textContent = '▼';
+                }
+            });
+            
+            updateTimeEl.innerHTML = `<span class="indicator"></span> 更新時間：${result.update_time}`;
+            loadingState.classList.add('hidden');
+            renderTable();
+            
+        } catch (error) {
+            console.error('Error fetching data:', error);
+            loadingState.innerHTML = `
+                <p style="color: #ef4444;">載入失敗，請稍後再試。</p>
+                <p style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 0.5rem;">如果你是在本地直接打開 HTML，可能會有 CORS 或是找不到檔案的問題。建議使用 VS Code Live Server 或上傳到 Github Pages 後觀看。</p>
+            `;
+        }
+    };
+
+    fetchData();
+});
