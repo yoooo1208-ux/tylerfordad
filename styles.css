@@ -69,9 +69,9 @@ body {
 }
 
 .container {
-    max-width: 1200px;
+    max-width: 100%; /* Use full width */
     margin: 0 auto;
-    padding: 2rem;
+    padding: 1rem 2rem;
     position: relative;
     z-index: 1;
 }
@@ -160,20 +160,22 @@ h1 {
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
     border: 1px solid var(--border-color);
-    border-radius: 20px;
-    overflow-x: auto;
+    border-radius: 12px;
+    overflow-x: hidden; /* Remove scrollbar */
     box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
     min-height: 400px;
+    width: 100%;
 }
 
 table {
     width: 100%;
     border-collapse: collapse;
     text-align: right;
+    font-size: 0.85rem; /* Smaller font to fit all columns */
 }
 
 th, td {
-    padding: 1.2rem 1.5rem;
+    padding: 0.6rem 0.4rem; /* Reduce padding */
     white-space: nowrap;
 }
 
