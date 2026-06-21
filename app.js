@@ -49,6 +49,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 <td>${item.close.toFixed(2)}</td>
                 <td class="value-column">${formatValue(item.avg_value)}</td>
                 <td class="highlight-avg">${item.avg_lots_per_trade.toFixed(2)}</td>
+                <td class="value-column" style="color: var(--text-secondary);">${formatNumber(Math.round(item.odd_vol_lots))}</td>
+                <td class="value-column" style="color: var(--text-secondary);">${formatNumber(item.odd_trades)}</td>
                 <td class="value-column">${formatNumber(Math.round(item.reg_vol_lots))}</td>
                 <td class="value-column">${formatNumber(item.reg_trades)}</td>
             `;
@@ -65,6 +67,8 @@ document.addEventListener('DOMContentLoaded', () => {
             // Map custom keys to data properties
             if (key === 'avg_lots') valA = a.avg_lots_per_trade, valB = b.avg_lots_per_trade;
             if (key === 'reg_vol') valA = a.reg_vol_lots, valB = b.reg_vol_lots;
+            if (key === 'odd_vol') valA = a.odd_vol_lots, valB = b.odd_vol_lots;
+            if (key === 'odd_trades') valA = a.odd_trades, valB = b.odd_trades;
 
             if (valA < valB) return desc ? 1 : -1;
             if (valA > valB) return desc ? -1 : 1;
