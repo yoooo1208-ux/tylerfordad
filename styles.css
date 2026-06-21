@@ -161,10 +161,20 @@ h1 {
     -webkit-backdrop-filter: blur(16px);
     border: 1px solid var(--border-color);
     border-radius: 12px;
-    overflow-x: hidden; /* Remove scrollbar */
+    overflow-x: auto; /* Enable scrolling */
+    -webkit-overflow-scrolling: touch;
     box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
     min-height: 400px;
     width: 100%;
+}
+
+/* Hide scrollbar visually but keep functionality */
+.table-container::-webkit-scrollbar {
+    display: none;
+}
+.table-container {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
 }
 
 table {
@@ -335,8 +345,7 @@ tbody tr:last-child {
     }
     
     .table-container {
-        overflow-x: auto; /* Enable horizontal scrolling ONLY on mobile */
-        -webkit-overflow-scrolling: touch;
+        /* scrolling is now enabled globally */
     }
     
     /* Make Code and Name columns sticky when scrolling horizontally */
