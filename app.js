@@ -47,7 +47,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <td class="name">${item.name}</td>
                 <td><span class="market-badge ${marketClass}">${item.market}</span></td>
                 <td>${item.close.toFixed(2)}</td>
-                <td class="value-column">${formatValue(item.value)}</td>
+                <td class="value-column">${formatValue(item.avg_value)}</td>
                 <td class="highlight-avg">${item.avg_lots_per_trade.toFixed(2)}</td>
                 <td class="value-column">${formatNumber(Math.round(item.reg_vol_lots))}</td>
                 <td class="value-column">${formatNumber(item.reg_trades)}</td>

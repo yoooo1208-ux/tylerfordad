@@ -29,9 +29,6 @@ def process_twse():
 
     # 2. Intraday Odd Lot (TWTCGU via main site since OpenAPI is often empty)
     twse_intraday_odd = fetch_json("https://www.twse.com.tw/exchangeReport/TWTCGU?response=json")
-    
-    # 3. After-hours Odd Lot (TWT53U via main site)
-    twse_after_odd = fetch_json("https://www.twse.com.tw/exchangeReport/TWT53U?response=json")
 
     # Parse odd lots into dictionaries for quick lookup
     odd_vols = {}
@@ -55,13 +52,6 @@ def process_twse():
     elif twse_intraday_odd and 'tables' in twse_intraday_odd:
         for table in twse_intraday_odd['tables']:
             add_odd(table, 0, 2, 4)
-            
-    if twse_after_odd and 'data' in twse_after_odd:
-        # TWT53U fields: ['證券代號', '證券名稱', '成交股數', '成交筆數', ...]
-        add_odd(twse_after_odd, 0, 2, 3)
-    elif twse_after_odd and 'tables' in twse_after_odd:
-        for table in twse_after_odd['tables']:
-            add_odd(table, 0, 2, 3)
 
     results = {}
     for item in twse_main:
@@ -92,13 +82,14 @@ def process_twse():
             
         avg_vol_shares = reg_vol / reg_trades
         avg_vol_lots = avg_vol_shares / 1000.0  # Convert to 張
+        avg_trade_value = avg_vol_shares * close_price
         
         results[code] = {
             'code': code,
             'name': name,
             'market': '上市',
             'close': close_price,
-            'value': total_value,
+            'avg_value': avg_trade_value,
             'avg_lots_per_trade': round(avg_vol_lots, 2),
             'reg_trades': reg_trades,
             'reg_vol_lots': round(reg_vol / 1000.0, 2)
@@ -110,9 +101,8 @@ def process_tpex():
     # TPEx main quotes
     tpex_main_api = fetch_json("https://www.tpex.org.tw/openapi/v1/tpex_mainboard_quotes")
     
-    # TPEx odd lot APIs
+    # TPEx odd lot APIs (Only intraday)
     tpex_intraday = fetch_json("https://www.tpex.org.tw/web/stock/aftertrading/intraday_odd_lot/stk_quote_result.php?l=zh-tw&o=json")
-    tpex_after = fetch_json("https://www.tpex.org.tw/web/stock/aftertrading/odd_trading_info/stk_quote_result.php?l=zh-tw&o=json")
     
     odd_vols = {}
     odd_trades = {}
@@ -146,8 +136,6 @@ def process_tpex():
 
     # Intraday fields: ['代號', '名稱', '成交股數', '成交金額', '成交筆數', ...]
     add_odd_tpex(tpex_intraday, 0, 2, 4)
-    # After-hours fields: ['代號', '名稱', '成交股數', '成交金額', '成交筆數', ...]
-    add_odd_tpex(tpex_after, 0, 2, 4)
 
     results = {}
     if not tpex_main_api: return results
@@ -180,13 +168,14 @@ def process_tpex():
             
         avg_vol_shares = reg_vol / reg_trades
         avg_vol_lots = avg_vol_shares / 1000.0
+        avg_trade_value = avg_vol_shares * close_price
         
         results[code] = {
             'code': code,
             'name': name,
             'market': '櫃買',
             'close': close_price,
-            'value': total_value,
+            'avg_value': avg_trade_value,
             'avg_lots_per_trade': round(avg_vol_lots, 2),
             'reg_trades': reg_trades,
             'reg_vol_lots': round(reg_vol / 1000.0, 2)
