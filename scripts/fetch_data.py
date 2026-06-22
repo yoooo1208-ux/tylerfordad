@@ -74,6 +74,23 @@ def process_twse():
                 close_price = float(close_price_str)
             else:
                 close_price = 0.0
+
+            sign_html = row[9]
+            change_val_str = row[10].strip()
+            change = 0.0
+            if change_val_str and change_val_str != 'X':
+                try:
+                    val = float(change_val_str)
+                    if 'red' in sign_html or '+' in sign_html:
+                        change = val
+                    elif 'green' in sign_html or '-' in sign_html:
+                        change = -val
+                except ValueError:
+                    pass
+            
+            ref_price = close_price - change
+            change_pct = (change / ref_price * 100) if ref_price > 0 else 0.0
+
         except ValueError:
             continue
             
@@ -100,6 +117,7 @@ def process_twse():
             'close': close_price,
             'avg_value': avg_trade_value,
             'avg_lots_per_trade': round(avg_vol_lots, 2),
+            'change_pct': round(change_pct, 2),
             'reg_trades': reg_trades,
             'reg_vol_lots': round(reg_vol / 1000.0, 2),
             'odd_vol_lots': round(odd_v / 1000.0, 2),
@@ -149,6 +167,17 @@ def process_tpex():
             total_vol = int(item.get('TradingShares', '0').replace(',', ''))
             total_trades = int(item.get('TransactionNumber', '0').replace(',', ''))
             close_price = float(item.get('Close', '0').replace(',', '')) if item.get('Close', '0') else 0.0
+
+            change_str = item.get('Change', '').strip()
+            change = 0.0
+            if change_str and change_str != 'X':
+                try:
+                    change = float(change_str)
+                except ValueError:
+                    pass
+            
+            ref_price = close_price - change
+            change_pct = (change / ref_price * 100) if ref_price > 0 else 0.0
         except ValueError:
             continue
             
@@ -175,6 +204,7 @@ def process_tpex():
             'close': close_price,
             'avg_value': avg_trade_value,
             'avg_lots_per_trade': round(avg_vol_lots, 2),
+            'change_pct': round(change_pct, 2),
             'reg_trades': reg_trades,
             'reg_vol_lots': round(reg_vol / 1000.0, 2),
             'odd_vol_lots': round(odd_v / 1000.0, 2),

@@ -41,12 +41,30 @@ document.addEventListener('DOMContentLoaded', () => {
             
             const marketClass = item.market === '上市' ? 'twse' : 'tpex';
             
+            let changeHtml = '<td class="value-column text-neutral">-</td>';
+            if (item.change_pct !== undefined) {
+                const pct = item.change_pct;
+                const pctStr = (pct > 0 ? '+' : '') + pct.toFixed(2) + '%';
+                if (pct >= 9.5) {
+                    changeHtml = `<td><span class="value-column bg-limit-up">${pctStr}</span></td>`;
+                } else if (pct <= -9.5) {
+                    changeHtml = `<td><span class="value-column bg-limit-down">${pctStr}</span></td>`;
+                } else if (pct > 0) {
+                    changeHtml = `<td class="value-column text-up">${pctStr}</td>`;
+                } else if (pct < 0) {
+                    changeHtml = `<td class="value-column text-down">${pctStr}</td>`;
+                } else {
+                    changeHtml = `<td class="value-column text-neutral">0.00%</td>`;
+                }
+            }
+
             tr.innerHTML = `
                 <td class="rank">${index + 1}</td>
                 <td class="code">${item.code}</td>
                 <td class="name">${item.name}</td>
                 <td><span class="market-badge ${marketClass}">${item.market}</span></td>
-                <td>${item.close.toFixed(2)}</td>
+                <td class="value-column">${item.close.toFixed(2)}</td>
+                ${changeHtml}
                 <td class="value-column">${formatValue(item.avg_value)}</td>
                 <td class="highlight-avg">${item.avg_lots_per_trade.toFixed(2)}</td>
                 <td class="value-column" style="color: var(--text-secondary);">${formatNumber(Math.round(item.odd_vol_lots))}</td>
@@ -69,6 +87,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (key === 'reg_vol') valA = a.reg_vol_lots, valB = b.reg_vol_lots;
             if (key === 'odd_vol') valA = a.odd_vol_lots, valB = b.odd_vol_lots;
             if (key === 'odd_trades') valA = a.odd_trades, valB = b.odd_trades;
+            if (key === 'change_pct') valA = a.change_pct || 0, valB = b.change_pct || 0;
 
             if (valA < valB) return desc ? 1 : -1;
             if (valA > valB) return desc ? -1 : 1;

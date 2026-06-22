@@ -277,6 +277,39 @@ tbody tr:last-child {
     font-weight: 500;
 }
 
+/* Price Change Styles */
+.text-up {
+    color: #ef4444;
+    font-weight: 600;
+}
+
+.text-down {
+    color: #22c55e;
+    font-weight: 600;
+}
+
+.text-neutral {
+    color: var(--text-secondary);
+}
+
+.bg-limit-up {
+    background-color: #ef4444;
+    color: #ffffff;
+    font-weight: 700;
+    padding: 0.2rem 0.5rem;
+    border-radius: 6px;
+    display: inline-block;
+}
+
+.bg-limit-down {
+    background-color: #22c55e;
+    color: #ffffff;
+    font-weight: 700;
+    padding: 0.2rem 0.5rem;
+    border-radius: 6px;
+    display: inline-block;
+}
+
 /* Loading & Empty States */
 .loading-state, .no-data-state {
     display: flex;
