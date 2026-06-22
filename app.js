@@ -125,8 +125,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // Fetch data
     const fetchData = async () => {
         try {
-            // In a real GitHub pages setup, this fetches data.json from the same directory
-            const response = await fetch('data.json');
+            // Add a timestamp to prevent browser caching so it always checks for the latest data.json
+            const response = await fetch(`data.json?t=${new Date().getTime()}`);
             if (!response.ok) {
                 throw new Error('Network response was not ok');
             }
