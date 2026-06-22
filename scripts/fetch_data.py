@@ -22,7 +22,16 @@ def fetch_json(url, retries=3):
 
 def process_twse():
     print("Fetching TWSE data...")
-    twse_main = fetch_json("https://openapi.twse.com.tw/v1/exchangeReport/STOCK_DAY_ALL")
+    # Use MI_INDEX instead of STOCK_DAY_ALL from OpenAPI, as OpenAPI is often delayed
+    twse_api_data = fetch_json("https://www.twse.com.tw/exchangeReport/MI_INDEX?response=json&type=ALLBUT0999")
+    twse_main = []
+    if twse_api_data and 'tables' in twse_api_data:
+        for table in twse_api_data['tables']:
+            fields = table.get('fields', [])
+            if len(fields) >= 9 and fields[0] == '證券代號':
+                twse_main = table.get('data', [])
+                break
+
     if not twse_main:
         return {}
 
@@ -49,17 +58,22 @@ def process_twse():
         add_odd(twse_intraday_odd, 0, 2, 3)
 
     results = {}
-    for item in twse_main:
-        code = item['Code'].strip()
-        name = item['Name'].strip()
+    for row in twse_main:
+        code = row[0].strip()
+        name = row[1].strip()
         
         if not (len(code) == 4 and code.isdigit()):
             continue
             
         try:
-            total_vol = int(item['TradeVolume'].replace(',', ''))
-            total_trades = int(item['Transaction'].replace(',', ''))
-            close_price = float(item['ClosingPrice'].replace(',', '')) if item['ClosingPrice'] else 0.0
+            total_vol = int(row[2].replace(',', ''))
+            total_trades = int(row[3].replace(',', ''))
+            close_price_str = row[8].replace(',', '').strip()
+            # Handle cases where closing price is empty, '--' or contains tags
+            if close_price_str and close_price_str != '--':
+                close_price = float(close_price_str)
+            else:
+                close_price = 0.0
         except ValueError:
             continue
             
