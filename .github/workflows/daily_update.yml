@@ -3,7 +3,7 @@ name: Daily Stock Data Update
 on:
   schedule:
     # 台灣時間 15:00 是 UTC 07:00。這裡設定為週一到週五的 UTC 07:00 (即台灣時間 15:00) 執行。
-    - cron: '0 8 * * 1-5'
+    - cron: '5 8 * * 1-5'
   workflow_dispatch: # 允許手動觸發
 
 jobs:
