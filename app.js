@@ -184,56 +184,220 @@ document.addEventListener('DOMContentLoaded', () => {
 
     fetchData();
 
-    // Trigger manual update via GitHub Action
+    // Helper to fetch JSON via CORS proxy
+    const fetchJsonProxied = async (url) => {
+        try {
+            // Using allorigins as a reliable CORS proxy
+            const response = await fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`);
+            if (!response.ok) return null;
+            return await response.json();
+        } catch (e) {
+            console.error('Error fetching proxied data:', url, e);
+            return null;
+        }
+    };
+
+    // Helper to format date
+    const getFormattedDate = () => {
+        const d = new Date();
+        return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')} ${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}:${String(d.getSeconds()).padStart(2, '0')}`;
+    };
+
+    // Process TWSE
+    const processTwse = async () => {
+        const twse_api_data = await fetchJsonProxied("https://www.twse.com.tw/exchangeReport/MI_INDEX?response=json&type=ALLBUT0999");
+        let twse_main = [];
+        if (twse_api_data && twse_api_data.tables) {
+            for (const table of twse_api_data.tables) {
+                if (table.fields && table.fields.length >= 9 && table.fields[0] === '證券代號') {
+                    twse_main = table.data || [];
+                    break;
+                }
+            }
+        }
+        if (twse_main.length === 0) return {};
+
+        const twse_intraday_odd = await fetchJsonProxied("https://www.twse.com.tw/exchangeReport/TWTC7U?response=json");
+        const odd_vols = {};
+        const odd_trades = {};
+        
+        if (twse_intraday_odd && twse_intraday_odd.data) {
+            twse_intraday_odd.data.forEach(row => {
+                const code = String(row[0]).trim();
+                const vol = parseInt(String(row[2]).replace(/,/g, ''), 10) || 0;
+                const trades = parseInt(String(row[3]).replace(/,/g, ''), 10) || 0;
+                odd_vols[code] = (odd_vols[code] || 0) + vol;
+                odd_trades[code] = (odd_trades[code] || 0) + trades;
+            });
+        }
+
+        const results = {};
+        twse_main.forEach(row => {
+            const code = String(row[0]).trim();
+            const name = String(row[1]).trim();
+            if (code.length !== 4 || isNaN(code)) return;
+
+            const total_vol = parseInt(String(row[2]).replace(/,/g, ''), 10) || 0;
+            const total_trades = parseInt(String(row[3]).replace(/,/g, ''), 10) || 0;
+            let close_price_str = String(row[8]).replace(/,/g, '').trim();
+            const close_price = (close_price_str && close_price_str !== '--') ? parseFloat(close_price_str) : 0.0;
+
+            const sign_html = String(row[9]);
+            const change_val_str = String(row[10]).trim();
+            let change = 0.0;
+            if (change_val_str && change_val_str !== 'X') {
+                const val = parseFloat(change_val_str) || 0.0;
+                if (sign_html.includes('red') || sign_html.includes('+')) change = val;
+                else if (sign_html.includes('green') || sign_html.includes('-')) change = -val;
+            }
+
+            const ref_price = close_price - change;
+            const change_pct = ref_price > 0 ? (change / ref_price * 100) : 0.0;
+
+            if (total_trades === 0) return;
+
+            const odd_v = odd_vols[code] || 0;
+            const odd_t = odd_trades[code] || 0;
+
+            const reg_vol = total_vol - odd_v;
+            const reg_trades = total_trades - odd_t;
+
+            if (reg_trades <= 0 || reg_vol <= 0) return;
+
+            const avg_vol_shares = reg_vol / reg_trades;
+            const avg_vol_lots = avg_vol_shares / 1000.0;
+            const avg_trade_value = avg_vol_shares * close_price;
+
+            results[code] = {
+                code, name, market: '上市', close: close_price,
+                avg_value: avg_trade_value,
+                avg_lots_per_trade: Math.round(avg_vol_lots * 100) / 100,
+                change_pct: Math.round(change_pct * 100) / 100,
+                reg_trades,
+                reg_vol_lots: Math.round((reg_vol / 1000.0) * 100) / 100,
+                odd_vol_lots: Math.round((odd_v / 1000.0) * 100) / 100,
+                odd_trades: odd_t
+            };
+        });
+        return results;
+    };
+
+    // Process TPEx
+    const processTpex = async () => {
+        const tpex_main_api = await fetchJsonProxied("https://www.tpex.org.tw/openapi/v1/tpex_mainboard_quotes");
+        let tpex_intraday = await fetchJsonProxied("https://www.tpex.org.tw/openapi/v1/tpex_odd_stock");
+        if (!tpex_intraday || tpex_intraday.length === 0) tpex_intraday = null;
+
+        const odd_vols = {};
+        const odd_trades = {};
+
+        if (tpex_intraday) {
+            tpex_intraday.forEach(row => {
+                const code = String(row.SecuritiesCompanyCode || '').trim();
+                const vol = parseInt(String(row.TradeVolume || '0').replace(/,/g, ''), 10) || 0;
+                const trades = parseInt(String(row.NumberOfTransactions || '0').replace(/,/g, ''), 10) || 0;
+                odd_vols[code] = (odd_vols[code] || 0) + vol;
+                odd_trades[code] = (odd_trades[code] || 0) + trades;
+            });
+        }
+
+        const results = {};
+        if (!tpex_main_api) return results;
+
+        tpex_main_api.forEach(item => {
+            const code = String(item.SecuritiesCompanyCode || '').trim();
+            const name = String(item.CompanyName || '').trim();
+            if (code.length !== 4 || isNaN(code)) return;
+
+            const total_vol = parseInt(String(item.TradingShares || '0').replace(/,/g, ''), 10) || 0;
+            const total_trades = parseInt(String(item.TransactionNumber || '0').replace(/,/g, ''), 10) || 0;
+            const close_price = item.Close ? parseFloat(String(item.Close).replace(/,/g, '')) : 0.0;
+
+            const change_str = String(item.Change || '').trim();
+            let change = 0.0;
+            if (change_str && change_str !== 'X') {
+                change = parseFloat(change_str) || 0.0;
+            }
+
+            const ref_price = close_price - change;
+            const change_pct = ref_price > 0 ? (change / ref_price * 100) : 0.0;
+
+            if (total_trades === 0) return;
+
+            const odd_v = odd_vols[code] || 0;
+            const odd_t = odd_trades[code] || 0;
+
+            const reg_vol = total_vol - odd_v;
+            const reg_trades = total_trades - odd_t;
+
+            if (reg_trades <= 0 || reg_vol <= 0) return;
+
+            const avg_vol_shares = reg_vol / reg_trades;
+            const avg_vol_lots = avg_vol_shares / 1000.0;
+            const avg_trade_value = avg_vol_shares * close_price;
+
+            results[code] = {
+                code, name, market: '櫃買', close: close_price,
+                avg_value: avg_trade_value,
+                avg_lots_per_trade: Math.round(avg_vol_lots * 100) / 100,
+                change_pct: Math.round(change_pct * 100) / 100,
+                reg_trades,
+                reg_vol_lots: Math.round((reg_vol / 1000.0) * 100) / 100,
+                odd_vol_lots: Math.round((odd_v / 1000.0) * 100) / 100,
+                odd_trades: odd_t
+            };
+        });
+        return results;
+    };
+
+    // Live update function
+    const fetchLiveMarketData = async () => {
+        try {
+            noDataState.classList.add('hidden');
+            loadingState.classList.remove('hidden');
+            tableBody.innerHTML = '';
+            
+            const [twse_data, tpex_data] = await Promise.all([processTwse(), processTpex()]);
+            
+            let all_data = [...Object.values(twse_data), ...Object.values(tpex_data)];
+            if (all_data.length === 0) {
+                throw new Error("無法取得有效資料");
+            }
+            
+            stockData = all_data;
+            filteredData = [...stockData];
+            
+            // Sort
+            sortData(currentSort.key, currentSort.desc);
+            
+            updateTimeEl.innerHTML = `<span class="indicator"></span> 更新時間：${getFormattedDate()} (即時抓取)`;
+            loadingState.classList.add('hidden');
+            renderTable();
+            return true;
+        } catch (error) {
+            console.error("Live fetch error:", error);
+            alert("即時抓取失敗，請稍後再試！");
+            loadingState.classList.add('hidden');
+            // Re-render old data if any
+            if (stockData.length > 0) renderTable();
+            return false;
+        }
+    };
+
+    // Trigger manual update via live fetch
     if (forceUpdateBtn) {
         forceUpdateBtn.addEventListener('click', async () => {
-            // 請替換為您的 GitHub Fine-grained Personal Access Token
-            // ⚠️ 警告：這會公開在網頁上，請確保該 Token "只有" tylerfordad 這個 repo 的 Actions (Read and Write) 權限
-            const GITHUB_TOKEN = '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'; 
-            const REPO_OWNER = 'yoooo1208-ux';
-            const REPO_NAME = 'tylerfordad';
-            const WORKFLOW_ID = 'daily_update.yml';
-            const BRANCH = 'main';
-
-            if (GITHUB_TOKEN === 'YOUR_GITHUB_TOKEN_HERE') {
-                alert('請先在 app.js 中設定您的 GitHub Token 才能使用此功能！(請看程式碼註解)');
-                return;
-            }
-
             forceUpdateBtn.disabled = true;
-            forceUpdateBtn.textContent = '觸發中...';
+            forceUpdateBtn.textContent = '抓取中...';
             forceUpdateBtn.style.opacity = '0.7';
-            forceUpdateBtn.style.cursor = 'not-allowed';
+            forceUpdateBtn.style.cursor = 'wait';
 
-            try {
-                const response = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/actions/workflows/${WORKFLOW_ID}/dispatches`, {
-                    method: 'POST',
-                    headers: {
-                        'Accept': 'application/vnd.github.v3+json',
-                        'Authorization': `Bearer ${GITHUB_TOKEN}`,
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        ref: BRANCH
-                    })
-                });
+            await fetchLiveMarketData();
 
-                if (response.ok || response.status === 204) {
-                    alert('已成功觸發更新！GitHub 伺服器約需 1~2 分鐘抓取資料，請稍後再重整網頁。');
-                } else {
-                    const errData = await response.json().catch(() => ({}));
-                    console.error('GitHub API Error:', errData);
-                    alert(`觸發失敗 (${response.status})：${errData.message || '請檢查 Token 權限'}`);
-                }
-            } catch (error) {
-                console.error('Trigger Error:', error);
-                alert('網路連線錯誤，無法觸發更新。');
-            } finally {
-                forceUpdateBtn.disabled = false;
-                forceUpdateBtn.textContent = '手動更新';
-                forceUpdateBtn.style.opacity = '1';
-                forceUpdateBtn.style.cursor = 'pointer';
-            }
+            forceUpdateBtn.disabled = false;
+            forceUpdateBtn.textContent = '手動更新';
+            forceUpdateBtn.style.opacity = '1';
+            forceUpdateBtn.style.cursor = 'pointer';
         });
     }
 });
