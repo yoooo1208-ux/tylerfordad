@@ -5,6 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const loadingState = document.getElementById('loading');
     const noDataState = document.getElementById('no-data');
     const sortHeaders = document.querySelectorAll('.sortable');
+    const forceUpdateBtn = document.getElementById('force-update-btn');
 
     let stockData = [];
     let filteredData = [];
@@ -182,4 +183,57 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     fetchData();
+
+    // Trigger manual update via GitHub Action
+    if (forceUpdateBtn) {
+        forceUpdateBtn.addEventListener('click', async () => {
+            // 請替換為您的 GitHub Fine-grained Personal Access Token
+            // ⚠️ 警告：這會公開在網頁上，請確保該 Token "只有" tylerfordad 這個 repo 的 Actions (Read and Write) 權限
+            const GITHUB_TOKEN = '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'; 
+            const REPO_OWNER = 'yoooo1208-ux';
+            const REPO_NAME = 'tylerfordad';
+            const WORKFLOW_ID = 'daily_update.yml';
+            const BRANCH = 'main';
+
+            if (GITHUB_TOKEN === 'YOUR_GITHUB_TOKEN_HERE') {
+                alert('請先在 app.js 中設定您的 GitHub Token 才能使用此功能！(請看程式碼註解)');
+                return;
+            }
+
+            forceUpdateBtn.disabled = true;
+            forceUpdateBtn.textContent = '觸發中...';
+            forceUpdateBtn.style.opacity = '0.7';
+            forceUpdateBtn.style.cursor = 'not-allowed';
+
+            try {
+                const response = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/actions/workflows/${WORKFLOW_ID}/dispatches`, {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/vnd.github.v3+json',
+                        'Authorization': `Bearer ${GITHUB_TOKEN}`,
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        ref: BRANCH
+                    })
+                });
+
+                if (response.ok || response.status === 204) {
+                    alert('已成功觸發更新！GitHub 伺服器約需 1~2 分鐘抓取資料，請稍後再重整網頁。');
+                } else {
+                    const errData = await response.json().catch(() => ({}));
+                    console.error('GitHub API Error:', errData);
+                    alert(`觸發失敗 (${response.status})：${errData.message || '請檢查 Token 權限'}`);
+                }
+            } catch (error) {
+                console.error('Trigger Error:', error);
+                alert('網路連線錯誤，無法觸發更新。');
+            } finally {
+                forceUpdateBtn.disabled = false;
+                forceUpdateBtn.textContent = '手動更新';
+                forceUpdateBtn.style.opacity = '1';
+                forceUpdateBtn.style.cursor = 'pointer';
+            }
+        });
+    }
 });
