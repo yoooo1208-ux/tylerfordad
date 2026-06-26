@@ -185,10 +185,9 @@ document.addEventListener('DOMContentLoaded', () => {
     fetchData();
 
 
-    // Trigger manual update via Google Apps Script Webhook
+    // Trigger manual update via Google Apps Script Webhook with Polling
     if (forceUpdateBtn) {
         forceUpdateBtn.addEventListener('click', async () => {
-            // 請將下方引號內的網址替換為您部署的 Google Apps Script 網址
             const GAS_WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycbw5SszsrQ_5LKll4dYxeJGn7N86SjR9PmBIzmSjsNo-ZNusHzOqNhgMDQ8lKp6U5m5W/exec'; 
 
             if (!GAS_WEBHOOK_URL) {
@@ -196,30 +195,106 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            forceUpdateBtn.disabled = true;
-            forceUpdateBtn.textContent = '觸發更新中...';
-            forceUpdateBtn.style.opacity = '0.7';
-            forceUpdateBtn.style.cursor = 'wait';
+            const modal = document.getElementById('update-modal');
+            const progressBar = document.getElementById('progress-bar');
+            const progressText = document.getElementById('progress-text');
+            const modalTitle = document.getElementById('modal-title');
+            const modalDesc = document.getElementById('modal-desc');
+
+            // 取得目前的更新時間，用來對比是否抓取完成
+            let oldUpdateTime = "";
+            try {
+                const initRes = await fetch(`data.json?t=${new Date().getTime()}`);
+                const initData = await initRes.json();
+                oldUpdateTime = initData.update_time;
+            } catch (e) {
+                console.warn("無法取得初始資料時間", e);
+            }
+
+            // 顯示 Modal
+            modal.classList.remove('hidden');
+            progressBar.style.width = '5%';
+            progressText.innerText = '5%';
+            modalTitle.innerText = '正在通知伺服器...';
+            modalDesc.innerText = '正在喚醒爬蟲程式，請稍候...';
+
+            let isError = false;
 
             try {
                 // 發送請求給 GAS 觸發 GitHub Action
                 const response = await fetch(GAS_WEBHOOK_URL);
                 const result = await response.json();
 
-                if (result.success) {
-                    alert('已經成功通知系統開始抓取最新盤後資料！\n\n伺服器更新約需 1 到 2 分鐘，請您稍後再重新整理本網頁即可看到最新資料。');
-                } else {
-                    alert('觸發失敗，請稍後再試。錯誤代碼：' + result.code);
+                if (!result.success) {
+                    throw new Error('觸發失敗: ' + result.code);
                 }
             } catch (error) {
                 console.error("Webhook error:", error);
-                alert('網路連線異常，無法觸發更新，請檢查網路狀態。');
-            } finally {
-                forceUpdateBtn.disabled = false;
-                forceUpdateBtn.textContent = '手動更新';
-                forceUpdateBtn.style.opacity = '1';
-                forceUpdateBtn.style.cursor = 'pointer';
+                isError = true;
+                modalTitle.innerText = '更新發生錯誤';
+                modalDesc.innerText = '網路連線異常或權限設定錯誤，請先關閉並檢查。';
+                progressBar.style.background = '#ef4444'; // 紅色
+                setTimeout(() => modal.classList.add('hidden'), 5000);
+                return;
             }
+
+            // 成功觸發，開始跑條與輪詢 (Polling)
+            modalTitle.innerText = '正在抓取證交所最新資料...';
+            modalDesc.innerText = '這大約需要 1 到 2 分鐘，完成後會自動幫您重整畫面！';
+            
+            let progress = 10;
+            progressBar.style.width = '10%';
+            progressText.innerText = '10%';
+
+            // 模擬進度條前進
+            const progressInterval = setInterval(() => {
+                if (progress < 90) {
+                    progress += Math.floor(Math.random() * 5) + 1; // 隨機增加 1~5%
+                    if (progress > 90) progress = 90;
+                    progressBar.style.width = progress + '%';
+                    progressText.innerText = progress + '%';
+                }
+            }, 3000);
+
+            // 每 10 秒檢查一次 data.json 是否更新
+            const checkUpdateInterval = setInterval(async () => {
+                try {
+                    const checkRes = await fetch(`data.json?t=${new Date().getTime()}`);
+                    if (checkRes.ok) {
+                        const checkData = await checkRes.json();
+                        if (checkData.update_time !== oldUpdateTime && checkData.update_time) {
+                            // 發現更新完成！
+                            clearInterval(progressInterval);
+                            clearInterval(checkUpdateInterval);
+                            
+                            progressBar.style.width = '100%';
+                            progressText.innerText = '100%';
+                            modalTitle.innerText = '更新完成！';
+                            modalDesc.innerText = '資料已是最新的，即將為您重新整理畫面...';
+                            progressBar.style.background = 'linear-gradient(90deg, #10b981, #34d399)'; // 綠色
+                            
+                            setTimeout(() => {
+                                window.location.reload(true);
+                            }, 1500);
+                        }
+                    }
+                } catch (e) {
+                    // 忽略檢查錯誤，繼續等
+                }
+            }, 10000);
+            
+            // 設定一個最長等待時間 (3分鐘)，防止無限等待
+            setTimeout(() => {
+                clearInterval(progressInterval);
+                clearInterval(checkUpdateInterval);
+                if (modalTitle.innerText !== '更新完成！') {
+                    modalTitle.innerText = '更新可能已經完成';
+                    modalDesc.innerText = '等待時間過長，即將為您重新整理畫面確認...';
+                    setTimeout(() => {
+                        window.location.reload(true);
+                    }, 2000);
+                }
+            }, 180000);
         });
     }
 });

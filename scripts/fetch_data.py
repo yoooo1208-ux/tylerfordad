@@ -222,8 +222,13 @@ def main():
     # Sort by avg_lots_per_trade descending
     all_data.sort(key=lambda x: x['avg_lots_per_trade'], reverse=True)
     
+    from datetime import datetime, timezone, timedelta
+    
+    tz_tpe = timezone(timedelta(hours=8))
+    tpe_time = datetime.now(tz_tpe)
+
     output = {
-        'update_time': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+        'update_time': tpe_time.strftime('%Y-%m-%d %H:%M:%S'),
         'data': all_data
     }
     
