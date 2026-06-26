@@ -185,12 +185,40 @@ document.addEventListener('DOMContentLoaded', () => {
     fetchData();
 
 
-    // Trigger manual update via GitHub Actions
+    // Trigger manual update via Google Apps Script Webhook
     if (forceUpdateBtn) {
-        forceUpdateBtn.addEventListener('click', () => {
-            const userConfirmed = confirm('由於證交所阻擋，瀏覽器無法直接即時抓取資料。\n\n您即將前往 GitHub Actions 頁面，請點選頁面中的「Run workflow」以手動更新最新資料。\n\n更新約需 1 分鐘，完成後請重新整理此網頁。\n\n是否前往？');
-            if (userConfirmed) {
-                window.open('https://github.com/yoooo1208-ux/tylerfordad/actions/workflows/daily_update.yml', '_blank');
+        forceUpdateBtn.addEventListener('click', async () => {
+            // 請將下方引號內的網址替換為您部署的 Google Apps Script 網址
+            const GAS_WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycbw5SszsrQ_5LKll4dYxeJGn7N86SjR9PmBIzmSjsNo-ZNusHzOqNhgMDQ8lKp6U5m5W/exec'; 
+
+            if (!GAS_WEBHOOK_URL) {
+                alert('系統尚未設定 Webhook 網址，請開發者設定後再試。');
+                return;
+            }
+
+            forceUpdateBtn.disabled = true;
+            forceUpdateBtn.textContent = '觸發更新中...';
+            forceUpdateBtn.style.opacity = '0.7';
+            forceUpdateBtn.style.cursor = 'wait';
+
+            try {
+                // 發送請求給 GAS 觸發 GitHub Action
+                const response = await fetch(GAS_WEBHOOK_URL);
+                const result = await response.json();
+
+                if (result.success) {
+                    alert('已經成功通知系統開始抓取最新盤後資料！\n\n伺服器更新約需 1 到 2 分鐘，請您稍後再重新整理本網頁即可看到最新資料。');
+                } else {
+                    alert('觸發失敗，請稍後再試。錯誤代碼：' + result.code);
+                }
+            } catch (error) {
+                console.error("Webhook error:", error);
+                alert('網路連線異常，無法觸發更新，請檢查網路狀態。');
+            } finally {
+                forceUpdateBtn.disabled = false;
+                forceUpdateBtn.textContent = '手動更新';
+                forceUpdateBtn.style.opacity = '1';
+                forceUpdateBtn.style.cursor = 'pointer';
             }
         });
     }
