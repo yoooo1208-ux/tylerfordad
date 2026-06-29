@@ -195,8 +195,8 @@ def process_tpex():
         odd_v = odd_vols.get(code, 0)
         odd_t = odd_trades.get(code, 0)
 
-        reg_vol = total_vol - odd_v
-        reg_trades = total_trades - odd_t
+        reg_vol = total_vol
+        reg_trades = total_trades
         
         if reg_trades <= 0 or reg_vol <= 0:
             continue
