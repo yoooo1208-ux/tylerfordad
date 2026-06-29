@@ -130,7 +130,7 @@ def process_tpex():
     tpex_main_api = fetch_json("https://www.tpex.org.tw/openapi/v1/tpex_mainboard_quotes")
     
     # TPEx odd lot via new Web API (contains combined intraday + after-market volume)
-    tpex_intraday_url = "https://www.tpex.org.tw/www/zh-tw/afterTrading/oddQuote?response=json"
+    tpex_intraday_url = "https://www.tpex.org.tw/www/zh-tw/afterTrading/oddSummary?type=Daily&response=json"
     tpex_intraday = fetch_json(tpex_intraday_url)
     
     odd_vols = {}
@@ -143,10 +143,19 @@ def process_tpex():
                 for row in table['data']:
                     code = row[0].strip()
                     try:
-                        vol = int(row[7].replace(',', ''))
-                        trades = int(row[9].replace(',', ''))
-                        odd_vols[code] = odd_vols.get(code, 0) + vol
-                        odd_trades[code] = odd_trades.get(code, 0) + trades
+                        # 盤中零股 (Intraday) at index 2 (volume), 3 (trades)
+                        # 盤後零股 (After-market) at index 5 (volume), 6 (trades)
+                        vol_in = int(row[2].replace(',', '')) if len(row) > 2 and row[2] else 0
+                        trades_in = int(row[3].replace(',', '')) if len(row) > 3 and row[3] else 0
+                        
+                        vol_after = int(row[5].replace(',', '')) if len(row) > 5 and row[5] else 0
+                        trades_after = int(row[6].replace(',', '')) if len(row) > 6 and row[6] else 0
+                        
+                        total_odd_vol = vol_in + vol_after
+                        total_odd_trades = trades_in + trades_after
+                        
+                        odd_vols[code] = odd_vols.get(code, 0) + total_odd_vol
+                        odd_trades[code] = odd_trades.get(code, 0) + total_odd_trades
                     except (ValueError, IndexError):
                         pass
 
