@@ -129,27 +129,26 @@ def process_tpex():
     print("Fetching TPEx data...")
     tpex_main_api = fetch_json("https://www.tpex.org.tw/openapi/v1/tpex_mainboard_quotes")
     
-    # TPEx odd lot via OpenAPI
-    # Note: As of June 2026, TPEx removed their intraday odd lot API. 
-    # We fallback to the official after-market odd stock API (tpex_odd_stock) 
-    # which corresponds to the data on the pricing.html page.
-    tpex_intraday = fetch_json("https://www.tpex.org.tw/openapi/v1/tpex_odd_stock")
+    # TPEx odd lot via new Web API (contains combined intraday + after-market volume)
+    tpex_intraday_url = "https://www.tpex.org.tw/www/zh-tw/afterTrading/oddQuote?response=json"
+    tpex_intraday = fetch_json(tpex_intraday_url)
     
     odd_vols = {}
     odd_trades = {}
     
-    def add_odd_tpex(data_list):
-        if not data_list: return
-        for row in data_list:
-            if isinstance(row, dict):
-                code = row.get('SecuritiesCompanyCode', '').strip()
-                try:
-                    vol = int(row.get('TradeVolume', '0').replace(',', ''))
-                    trades = int(row.get('NumberOfTransactions', '0').replace(',', ''))
-                    odd_vols[code] = odd_vols.get(code, 0) + vol
-                    odd_trades[code] = odd_trades.get(code, 0) + trades
-                except ValueError:
-                    pass
+    def add_odd_tpex(data_json):
+        if not data_json or 'tables' not in data_json: return
+        for table in data_json['tables']:
+            if 'data' in table:
+                for row in table['data']:
+                    code = row[0].strip()
+                    try:
+                        vol = int(row[7].replace(',', ''))
+                        trades = int(row[9].replace(',', ''))
+                        odd_vols[code] = odd_vols.get(code, 0) + vol
+                        odd_trades[code] = odd_trades.get(code, 0) + trades
+                    except (ValueError, IndexError):
+                        pass
 
     add_odd_tpex(tpex_intraday)
 
