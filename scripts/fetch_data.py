@@ -129,12 +129,11 @@ def process_tpex():
     print("Fetching TPEx data...")
     tpex_main_api = fetch_json("https://www.tpex.org.tw/openapi/v1/tpex_mainboard_quotes")
     
-    # TPEx intraday odd lot via OpenAPI
-    tpex_intraday = fetch_json("https://www.tpex.org.tw/openapi/v1/tpex_mainboard_intraday_odd_lot")
-    if not tpex_intraday or len(tpex_intraday) == 0:
-        # OpenAPI for TPEx intraday odd lot is currently returning HTML errors sometimes. 
-        # Do NOT fallback to tpex_odd_stock as it is AFTER-MARKET odd lot, which would skew the data.
-        tpex_intraday = None
+    # TPEx odd lot via OpenAPI
+    # Note: As of June 2026, TPEx removed their intraday odd lot API. 
+    # We fallback to the official after-market odd stock API (tpex_odd_stock) 
+    # which corresponds to the data on the pricing.html page.
+    tpex_intraday = fetch_json("https://www.tpex.org.tw/openapi/v1/tpex_odd_stock")
     
     odd_vols = {}
     odd_trades = {}
