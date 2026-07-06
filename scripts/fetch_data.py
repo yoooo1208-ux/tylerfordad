@@ -24,6 +24,9 @@ def process_twse():
     print("Fetching TWSE data...")
     # Use MI_INDEX instead of STOCK_DAY_ALL from OpenAPI, as OpenAPI is often delayed
     twse_api_data = fetch_json("https://www.twse.com.tw/exchangeReport/MI_INDEX?response=json&type=ALLBUT0999")
+    twse_date_raw = twse_api_data.get('date', '') if twse_api_data else ''
+    twse_date = f"{twse_date_raw[:4]}/{twse_date_raw[4:6]}/{twse_date_raw[6:]}" if len(twse_date_raw) == 8 else twse_date_raw
+    
     twse_main = []
     if twse_api_data and 'tables' in twse_api_data:
         for table in twse_api_data['tables']:
@@ -33,7 +36,7 @@ def process_twse():
                 break
 
     if not twse_main:
-        return {}
+        return {}, twse_date
 
     # 盤中零股 TWTC7U
     twse_intraday_odd = fetch_json("https://www.twse.com.tw/exchangeReport/TWTC7U?response=json")
@@ -123,7 +126,7 @@ def process_twse():
             'odd_vol_lots': round(odd_v / 1000.0, 2),
             'odd_trades': odd_t
         }
-    return results
+    return results, twse_date
 
 def process_tpex():
     print("Fetching TPEx data...")
@@ -132,6 +135,9 @@ def process_tpex():
     # TPEx odd lot via new Web API (contains combined intraday + after-market volume)
     tpex_intraday_url = "https://www.tpex.org.tw/www/zh-tw/afterTrading/oddSummary?type=Daily&response=json"
     tpex_intraday = fetch_json(tpex_intraday_url)
+    
+    tpex_date_raw = tpex_intraday.get('date', tpex_intraday.get('reportDate', '')) if tpex_intraday else ''
+    tpex_date = f"{tpex_date_raw[:4]}/{tpex_date_raw[4:6]}/{tpex_date_raw[6:]}" if len(tpex_date_raw) == 8 else tpex_date_raw
     
     odd_vols = {}
     odd_trades = {}
@@ -162,7 +168,7 @@ def process_tpex():
     add_odd_tpex(tpex_intraday)
 
     results = {}
-    if not tpex_main_api: return results
+    if not tpex_main_api: return results, tpex_date
     
     for item in tpex_main_api:
         code = item.get('SecuritiesCompanyCode', '').strip()
@@ -218,11 +224,11 @@ def process_tpex():
             'odd_vol_lots': round(odd_v / 1000.0, 2),
             'odd_trades': odd_t
         }
-    return results
+    return results, tpex_date
 
 def main():
-    twse_data = process_twse()
-    tpex_data = process_tpex()
+    twse_data, twse_date = process_twse()
+    tpex_data, tpex_date = process_tpex()
     
     # Fallback to existing data.json if any market failed to fetch
     try:
@@ -230,15 +236,18 @@ def main():
             old_json = json.load(f)
             old_data = old_json.get('data', [])
     except (FileNotFoundError, json.JSONDecodeError):
+        old_json = {}
         old_data = []
 
     if not twse_data and old_data:
         print("TWSE data is empty! Reusing TWSE data from existing data.json.")
         twse_data = {item['code']: item for item in old_data if item.get('market') == '上市'}
+        twse_date = old_json.get('twse_date', '未知')
         
     if not tpex_data and old_data:
         print("TPEx data is empty! Reusing TPEx data from existing data.json.")
         tpex_data = {item['code']: item for item in old_data if item.get('market') == '櫃買'}
+        tpex_date = old_json.get('tpex_date', '未知')
         
     if not twse_data and not tpex_data:
         print("Both TWSE and TPEx data are empty. Aborting.")
@@ -256,6 +265,8 @@ def main():
 
     output = {
         'update_time': tpe_time.strftime('%Y-%m-%d %H:%M:%S'),
+        'twse_date': twse_date,
+        'tpex_date': tpex_date,
         'data': all_data
     }
     

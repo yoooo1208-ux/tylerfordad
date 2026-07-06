@@ -169,7 +169,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             });
             
-            updateTimeEl.innerHTML = `<span class="indicator"></span> 更新時間：${result.update_time}`;
+            let twseDate = result.twse_date || '未知';
+            let tpexDate = result.tpex_date || '未知';
+            updateTimeEl.innerHTML = `
+                <div style="margin-bottom: 4px;"><span class="indicator"></span> 網頁更新時間：${result.update_time}</div>
+                <div style="font-size: 0.85rem; color: var(--text-secondary);">
+                    <span>上市資料：${twseDate}</span> | <span>上櫃資料：${tpexDate}</span>
+                </div>
+            `;
             loadingState.classList.add('hidden');
             renderTable();
             
