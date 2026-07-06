@@ -224,6 +224,26 @@ def main():
     twse_data = process_twse()
     tpex_data = process_tpex()
     
+    # Fallback to existing data.json if any market failed to fetch
+    try:
+        with open('data.json', 'r', encoding='utf-8') as f:
+            old_json = json.load(f)
+            old_data = old_json.get('data', [])
+    except (FileNotFoundError, json.JSONDecodeError):
+        old_data = []
+
+    if not twse_data and old_data:
+        print("TWSE data is empty! Reusing TWSE data from existing data.json.")
+        twse_data = {item['code']: item for item in old_data if item.get('market') == '上市'}
+        
+    if not tpex_data and old_data:
+        print("TPEx data is empty! Reusing TPEx data from existing data.json.")
+        tpex_data = {item['code']: item for item in old_data if item.get('market') == '櫃買'}
+        
+    if not twse_data and not tpex_data:
+        print("Both TWSE and TPEx data are empty. Aborting.")
+        return
+
     all_data = list(twse_data.values()) + list(tpex_data.values())
     
     # Sort by avg_lots_per_trade descending
