@@ -1,8 +1,21 @@
 {
-  "update_time": "2026-10-14 16:03:57",
+  "update_time": "2026-10-14 20:41:43",
   "twse_date": "2026/10/14",
   "tpex_date": "2026/10/14",
   "data": [
+    {
+      "code": "1907",
+      "name": "永豐餘",
+      "market": "上市",
+      "close": 28.7,
+      "avg_value": 1091375.5674418604,
+      "avg_lots_per_trade": 38.03,
+      "change_pct": 1.77,
+      "reg_trades": 516,
+      "reg_vol_lots": 19621.94,
+      "odd_vol_lots": 6.49,
+      "odd_trades": 92
+    },
     {
       "code": "5902",
       "name": "德記",
@@ -303,6 +316,19 @@
       "odd_trades": 269
     },
     {
+      "code": "2891",
+      "name": "中信金",
+      "market": "上市",
+      "close": 71.4,
+      "avg_value": 285270.0803688425,
+      "avg_lots_per_trade": 4.0,
+      "change_pct": -0.28,
+      "reg_trades": 8242,
+      "reg_vol_lots": 32929.92,
+      "odd_vol_lots": 189.81,
+      "odd_trades": 7331
+    },
+    {
       "code": "2349",
       "name": "錸德",
       "market": "上市",
@@ -394,6 +420,19 @@
       "odd_trades": 107
     },
     {
+      "code": "2882",
+      "name": "國泰金",
+      "market": "上市",
+      "close": 114.0,
+      "avg_value": 445594.82910694595,
+      "avg_lots_per_trade": 3.91,
+      "change_pct": -0.44,
+      "reg_trades": 5442,
+      "reg_vol_lots": 21271.29,
+      "odd_vol_lots": 90.83,
+      "odd_trades": 2562
+    },
+    {
       "code": "5521",
       "name": "工信",
       "market": "上市",
@@ -444,32 +483,6 @@
       "reg_vol_lots": 35945.06,
       "odd_vol_lots": 363.66,
       "odd_trades": 3443
-    },
-    {
-      "code": "2882",
-      "name": "國泰金",
-      "market": "上市",
-      "close": 114.0,
-      "avg_value": 428910.1213235294,
-      "avg_lots_per_trade": 3.76,
-      "change_pct": -0.44,
-      "reg_trades": 5440,
-      "reg_vol_lots": 20467.29,
-      "odd_vol_lots": 90.83,
-      "odd_trades": 2562
-    },
-    {
-      "code": "2891",
-      "name": "中信金",
-      "market": "上市",
-      "close": 71.4,
-      "avg_value": 267428.6653398058,
-      "avg_lots_per_trade": 3.75,
-      "change_pct": -0.28,
-      "reg_trades": 8240,
-      "reg_vol_lots": 30862.92,
-      "odd_vol_lots": 189.81,
-      "odd_trades": 7331
     },
     {
       "code": "3045",
@@ -905,11 +918,11 @@
       "name": "富邦金",
       "market": "上市",
       "close": 160.5,
-      "avg_value": 492051.45799517434,
-      "avg_lots_per_trade": 3.07,
+      "avg_value": 502434.6632306174,
+      "avg_lots_per_trade": 3.13,
       "change_pct": 0.31,
-      "reg_trades": 9118,
-      "reg_vol_lots": 27953.43,
+      "reg_trades": 9119,
+      "reg_vol_lots": 28546.43,
       "odd_vol_lots": 281.62,
       "odd_trades": 6418
     },
@@ -1289,6 +1302,19 @@
       "reg_vol_lots": 10731.33,
       "odd_vol_lots": 47.32,
       "odd_trades": 462
+    },
+    {
+      "code": "4904",
+      "name": "遠傳",
+      "market": "上市",
+      "close": 108.0,
+      "avg_value": 305979.8767042086,
+      "avg_lots_per_trade": 2.83,
+      "change_pct": 0.47,
+      "reg_trades": 1687,
+      "reg_vol_lots": 4779.52,
+      "odd_vol_lots": 35.31,
+      "odd_trades": 484
     },
     {
       "code": "1308",
@@ -1850,19 +1876,6 @@
       "odd_trades": 22
     },
     {
-      "code": "4904",
-      "name": "遠傳",
-      "market": "上市",
-      "close": 108.0,
-      "avg_value": 276410.7133531157,
-      "avg_lots_per_trade": 2.56,
-      "change_pct": 0.47,
-      "reg_trades": 1685,
-      "reg_vol_lots": 4312.52,
-      "odd_vol_lots": 35.31,
-      "odd_trades": 484
-    },
-    {
       "code": "6120",
       "name": "達運",
       "market": "上市",
@@ -2201,6 +2214,19 @@
       "odd_trades": 19
     },
     {
+      "code": "2303",
+      "name": "聯電",
+      "market": "上市",
+      "close": 142.0,
+      "avg_value": 342171.96828201617,
+      "avg_lots_per_trade": 2.41,
+      "change_pct": 0.35,
+      "reg_trades": 45274,
+      "reg_vol_lots": 109095.03,
+      "odd_vol_lots": 1581.89,
+      "odd_trades": 19978
+    },
+    {
       "code": "5603",
       "name": "陸海",
       "market": "櫃買",
@@ -2225,19 +2251,6 @@
       "reg_vol_lots": 140.0,
       "odd_vol_lots": 3.86,
       "odd_trades": 51
-    },
-    {
-      "code": "2303",
-      "name": "聯電",
-      "market": "上市",
-      "close": 142.0,
-      "avg_value": 341161.41747658595,
-      "avg_lots_per_trade": 2.4,
-      "change_pct": 0.35,
-      "reg_trades": 45272,
-      "reg_vol_lots": 108768.03,
-      "odd_vol_lots": 1581.89,
-      "odd_trades": 19978
     },
     {
       "code": "2412",
@@ -3033,6 +3046,19 @@
       "odd_trades": 609
     },
     {
+      "code": "2317",
+      "name": "鴻海",
+      "market": "上市",
+      "close": 243.0,
+      "avg_value": 524997.875103814,
+      "avg_lots_per_trade": 2.16,
+      "change_pct": 1.25,
+      "reg_trades": 15653,
+      "reg_vol_lots": 33818.07,
+      "odd_vol_lots": 695.57,
+      "odd_trades": 12085
+    },
+    {
       "code": "4426",
       "name": "利勤",
       "market": "上市",
@@ -3200,19 +3226,6 @@
       "reg_vol_lots": 45.0,
       "odd_vol_lots": 0.72,
       "odd_trades": 34
-    },
-    {
-      "code": "2317",
-      "name": "鴻海",
-      "market": "上市",
-      "close": 243.0,
-      "avg_value": 517268.83075645287,
-      "avg_lots_per_trade": 2.13,
-      "change_pct": 1.25,
-      "reg_trades": 15652,
-      "reg_vol_lots": 33318.07,
-      "odd_vol_lots": 695.57,
-      "odd_trades": 12085
     },
     {
       "code": "2501",
@@ -6842,6 +6855,19 @@
       "odd_trades": 30
     },
     {
+      "code": "3711",
+      "name": "日月光投控",
+      "market": "上市",
+      "close": 747.0,
+      "avg_value": 1275977.7847741935,
+      "avg_lots_per_trade": 1.71,
+      "change_pct": 0.95,
+      "reg_trades": 7750,
+      "reg_vol_lots": 13238.06,
+      "odd_vol_lots": 291.87,
+      "odd_trades": 7570
+    },
+    {
       "code": "4915",
       "name": "致伸",
       "market": "上市",
@@ -7674,6 +7700,19 @@
       "odd_trades": 16
     },
     {
+      "code": "2301",
+      "name": "光寶科",
+      "market": "上市",
+      "close": 283.0,
+      "avg_value": 464511.57739791076,
+      "avg_lots_per_trade": 1.64,
+      "change_pct": 2.54,
+      "reg_trades": 5265,
+      "reg_vol_lots": 8641.89,
+      "odd_vol_lots": 146.81,
+      "odd_trades": 3121
+    },
+    {
       "code": "2374",
       "name": "佳能",
       "market": "上市",
@@ -7776,6 +7815,19 @@
       "reg_vol_lots": 29.33,
       "odd_vol_lots": 0.02,
       "odd_trades": 3
+    },
+    {
+      "code": "1590",
+      "name": "亞德客-KY",
+      "market": "上市",
+      "close": 1185.0,
+      "avg_value": 1932612.111111111,
+      "avg_lots_per_trade": 1.63,
+      "change_pct": 1.28,
+      "reg_trades": 810,
+      "reg_vol_lots": 1321.03,
+      "odd_vol_lots": 134.21,
+      "odd_trades": 3190
     },
     {
       "code": "1612",
@@ -8023,19 +8075,6 @@
       "reg_vol_lots": 1295.0,
       "odd_vol_lots": 4.25,
       "odd_trades": 170
-    },
-    {
-      "code": "3711",
-      "name": "日月光投控",
-      "market": "上市",
-      "close": 747.0,
-      "avg_value": 1212904.3530778165,
-      "avg_lots_per_trade": 1.62,
-      "change_pct": 0.95,
-      "reg_trades": 7749,
-      "reg_vol_lots": 12582.06,
-      "odd_vol_lots": 291.87,
-      "odd_trades": 7570
     },
     {
       "code": "4916",
@@ -8545,19 +8584,6 @@
       "odd_trades": 4
     },
     {
-      "code": "2301",
-      "name": "光寶科",
-      "market": "上市",
-      "close": 283.0,
-      "avg_value": 447987.54844224924,
-      "avg_lots_per_trade": 1.58,
-      "change_pct": 2.54,
-      "reg_trades": 5264,
-      "reg_vol_lots": 8332.89,
-      "odd_vol_lots": 146.81,
-      "odd_trades": 3121
-    },
-    {
       "code": "2363",
       "name": "矽統",
       "market": "上市",
@@ -9050,6 +9076,19 @@
       "reg_vol_lots": 844.1,
       "odd_vol_lots": 4.16,
       "odd_trades": 74
+    },
+    {
+      "code": "2330",
+      "name": "台積電",
+      "market": "上市",
+      "close": 2490.0,
+      "avg_value": 3857363.5131348516,
+      "avg_lots_per_trade": 1.55,
+      "change_pct": 0.0,
+      "reg_trades": 17130,
+      "reg_vol_lots": 26536.8,
+      "odd_vol_lots": 1575.14,
+      "odd_trades": 74072
     },
     {
       "code": "2414",
@@ -11860,6 +11899,32 @@
       "odd_trades": 12751
     },
     {
+      "code": "2376",
+      "name": "技嘉",
+      "market": "上市",
+      "close": 356.0,
+      "avg_value": 504270.93982808024,
+      "avg_lots_per_trade": 1.42,
+      "change_pct": 0.14,
+      "reg_trades": 2094,
+      "reg_vol_lots": 2966.13,
+      "odd_vol_lots": 74.8,
+      "odd_trades": 1790
+    },
+    {
+      "code": "2395",
+      "name": "研華",
+      "market": "上市",
+      "close": 714.0,
+      "avg_value": 1012736.6666666666,
+      "avg_lots_per_trade": 1.42,
+      "change_pct": -0.56,
+      "reg_trades": 1530,
+      "reg_vol_lots": 2170.15,
+      "odd_vol_lots": 67.05,
+      "odd_trades": 2710
+    },
+    {
       "code": "2481",
       "name": "強茂",
       "market": "上市",
@@ -12300,19 +12365,6 @@
       "reg_vol_lots": 314.42,
       "odd_vol_lots": 8.29,
       "odd_trades": 140
-    },
-    {
-      "code": "1907",
-      "name": "永豐餘",
-      "market": "上市",
-      "close": 28.7,
-      "avg_value": 40232.60737864077,
-      "avg_lots_per_trade": 1.4,
-      "change_pct": 1.77,
-      "reg_trades": 515,
-      "reg_vol_lots": 721.94,
-      "odd_vol_lots": 6.49,
-      "odd_trades": 92
     },
     {
       "code": "2413",
@@ -13069,19 +13121,6 @@
       "odd_trades": 332
     },
     {
-      "code": "2376",
-      "name": "技嘉",
-      "market": "上市",
-      "close": 356.0,
-      "avg_value": 490904.60965121834,
-      "avg_lots_per_trade": 1.38,
-      "change_pct": 0.14,
-      "reg_trades": 2093,
-      "reg_vol_lots": 2886.13,
-      "odd_vol_lots": 74.8,
-      "odd_trades": 1790
-    },
-    {
       "code": "2408",
       "name": "南亞科",
       "market": "上市",
@@ -13587,19 +13626,6 @@
       "reg_vol_lots": 46413.18,
       "odd_vol_lots": 1234.09,
       "odd_trades": 27674
-    },
-    {
-      "code": "2330",
-      "name": "台積電",
-      "market": "上市",
-      "close": 2490.0,
-      "avg_value": 3393850.3409556113,
-      "avg_lots_per_trade": 1.36,
-      "change_pct": 0.0,
-      "reg_trades": 17099,
-      "reg_vol_lots": 23305.8,
-      "odd_vol_lots": 1575.14,
-      "odd_trades": 74072
     },
     {
       "code": "2465",
@@ -14906,11 +14932,11 @@
       "name": "南電",
       "market": "上市",
       "close": 1430.0,
-      "avg_value": 1868816.727817297,
+      "avg_value": 1871946.2773722627,
       "avg_lots_per_trade": 1.31,
       "change_pct": -0.69,
-      "reg_trades": 5342,
-      "reg_vol_lots": 6981.27,
+      "reg_trades": 5343,
+      "reg_vol_lots": 6994.27,
       "odd_vol_lots": 152.83,
       "odd_trades": 6411
     },
@@ -15043,19 +15069,6 @@
       "reg_vol_lots": 44.04,
       "odd_vol_lots": 2.69,
       "odd_trades": 184
-    },
-    {
-      "code": "2395",
-      "name": "研華",
-      "market": "上市",
-      "close": 714.0,
-      "avg_value": 929485.0130890053,
-      "avg_lots_per_trade": 1.3,
-      "change_pct": -0.56,
-      "reg_trades": 1528,
-      "reg_vol_lots": 1989.15,
-      "odd_vol_lots": 67.05,
-      "odd_trades": 2710
     },
     {
       "code": "5258",
@@ -15563,6 +15576,19 @@
       "reg_vol_lots": 449.0,
       "odd_vol_lots": 6.95,
       "odd_trades": 92
+    },
+    {
+      "code": "2345",
+      "name": "智邦",
+      "market": "上市",
+      "close": 2050.0,
+      "avg_value": 2619108.105325096,
+      "avg_lots_per_trade": 1.28,
+      "change_pct": 0.49,
+      "reg_trades": 3399,
+      "reg_vol_lots": 4342.61,
+      "odd_vol_lots": 222.62,
+      "odd_trades": 8412
     },
     {
       "code": "2453",
@@ -16096,6 +16122,19 @@
       "reg_vol_lots": 44.0,
       "odd_vol_lots": 1.7,
       "odd_trades": 80
+    },
+    {
+      "code": "2360",
+      "name": "致茂",
+      "market": "上市",
+      "close": 2250.0,
+      "avg_value": 2845579.005934718,
+      "avg_lots_per_trade": 1.26,
+      "change_pct": 2.27,
+      "reg_trades": 2022,
+      "reg_vol_lots": 2557.23,
+      "odd_vol_lots": 68.47,
+      "odd_trades": 3328
     },
     {
       "code": "3004",
@@ -16811,19 +16850,6 @@
       "reg_vol_lots": 194.2,
       "odd_vol_lots": 2.44,
       "odd_trades": 173
-    },
-    {
-      "code": "2345",
-      "name": "智邦",
-      "market": "上市",
-      "close": 2050.0,
-      "avg_value": 2543696.1561119296,
-      "avg_lots_per_trade": 1.24,
-      "change_pct": 0.49,
-      "reg_trades": 3395,
-      "reg_vol_lots": 4212.61,
-      "odd_vol_lots": 222.62,
-      "odd_trades": 8412
     },
     {
       "code": "3028",
@@ -17630,19 +17656,6 @@
       "reg_vol_lots": 1746.24,
       "odd_vol_lots": 28.22,
       "odd_trades": 455
-    },
-    {
-      "code": "2360",
-      "name": "致茂",
-      "market": "上市",
-      "close": 2250.0,
-      "avg_value": 2730640.8887785506,
-      "avg_lots_per_trade": 1.21,
-      "change_pct": 2.27,
-      "reg_trades": 2014,
-      "reg_vol_lots": 2444.23,
-      "odd_vol_lots": 68.47,
-      "odd_trades": 3328
     },
     {
       "code": "2420",
@@ -20141,19 +20154,6 @@
       "odd_trades": 15
     },
     {
-      "code": "1590",
-      "name": "亞德客-KY",
-      "market": "上市",
-      "close": 1185.0,
-      "avg_value": 1356434.9251870324,
-      "avg_lots_per_trade": 1.14,
-      "change_pct": 1.28,
-      "reg_trades": 802,
-      "reg_vol_lots": 918.03,
-      "odd_vol_lots": 134.21,
-      "odd_trades": 3190
-    },
-    {
       "code": "2404",
       "name": "漢唐",
       "market": "上市",
@@ -21233,6 +21233,19 @@
       "odd_trades": 17
     },
     {
+      "code": "3665",
+      "name": "貿聯-KY",
+      "market": "上市",
+      "close": 2235.0,
+      "avg_value": 2454303.2491694354,
+      "avg_lots_per_trade": 1.1,
+      "change_pct": -1.11,
+      "reg_trades": 1505,
+      "reg_vol_lots": 1652.67,
+      "odd_vol_lots": 168.45,
+      "odd_trades": 7644
+    },
+    {
       "code": "6243",
       "name": "迅杰",
       "market": "上市",
@@ -21387,19 +21400,6 @@
       "reg_vol_lots": 12.0,
       "odd_vol_lots": 1.35,
       "odd_trades": 67
-    },
-    {
-      "code": "3665",
-      "name": "貿聯-KY",
-      "market": "上市",
-      "close": 2235.0,
-      "avg_value": 2441074.727393617,
-      "avg_lots_per_trade": 1.09,
-      "change_pct": -1.11,
-      "reg_trades": 1504,
-      "reg_vol_lots": 1642.67,
-      "odd_vol_lots": 168.45,
-      "odd_trades": 7644
     },
     {
       "code": "4771",
@@ -22806,6 +22806,19 @@
       "odd_trades": 157
     },
     {
+      "code": "2454",
+      "name": "聯發科",
+      "market": "上市",
+      "close": 4475.0,
+      "avg_value": 4544918.4807342235,
+      "avg_lots_per_trade": 1.02,
+      "change_pct": -1.1,
+      "reg_trades": 6592,
+      "reg_vol_lots": 6694.99,
+      "odd_vol_lots": 1159.69,
+      "odd_trades": 77703
+    },
+    {
       "code": "2727",
       "name": "王品",
       "market": "上市",
@@ -22927,11 +22940,11 @@
       "name": "緯穎",
       "market": "上市",
       "close": 2115.0,
-      "avg_value": 2126076.4783070385,
+      "avg_value": 2136719.410738662,
       "avg_lots_per_trade": 1.01,
       "change_pct": -3.64,
-      "reg_trades": 6592,
-      "reg_vol_lots": 6626.52,
+      "reg_trades": 6593,
+      "reg_vol_lots": 6660.7,
       "odd_vol_lots": 819.22,
       "odd_trades": 49595
     },
@@ -23053,19 +23066,6 @@
       "odd_trades": 24
     },
     {
-      "code": "2454",
-      "name": "聯發科",
-      "market": "上市",
-      "close": 4475.0,
-      "avg_value": 4490617.335711033,
-      "avg_lots_per_trade": 1.0,
-      "change_pct": -1.1,
-      "reg_trades": 6589,
-      "reg_vol_lots": 6611.99,
-      "odd_vol_lots": 1159.69,
-      "odd_trades": 77703
-    },
-    {
       "code": "2910",
       "name": "統領",
       "market": "上市",
@@ -23103,6 +23103,19 @@
       "reg_vol_lots": 1073.43,
       "odd_vol_lots": 62.11,
       "odd_trades": 6345
+    },
+    {
+      "code": "3653",
+      "name": "健策",
+      "market": "上市",
+      "close": 7070.0,
+      "avg_value": 7054175.180935569,
+      "avg_lots_per_trade": 1.0,
+      "change_pct": 1.14,
+      "reg_trades": 1133,
+      "reg_vol_lots": 1130.46,
+      "odd_vol_lots": 48.52,
+      "odd_trades": 3234
     },
     {
       "code": "4439",
@@ -24873,19 +24886,6 @@
       "odd_trades": 287
     },
     {
-      "code": "3653",
-      "name": "健策",
-      "market": "上市",
-      "close": 7070.0,
-      "avg_value": 7016640.56587091,
-      "avg_lots_per_trade": 0.99,
-      "change_pct": 1.14,
-      "reg_trades": 1131,
-      "reg_vol_lots": 1122.46,
-      "odd_vol_lots": 48.52,
-      "odd_trades": 3234
-    },
-    {
       "code": "6552",
       "name": "易華電",
       "market": "上市",
@@ -25176,11 +25176,11 @@
       "name": "川湖",
       "market": "上市",
       "close": 10005.0,
-      "avg_value": 8884455.27480916,
-      "avg_lots_per_trade": 0.89,
+      "avg_value": 8992924.092987804,
+      "avg_lots_per_trade": 0.9,
       "change_pct": -0.55,
-      "reg_trades": 655,
-      "reg_vol_lots": 581.64,
+      "reg_trades": 656,
+      "reg_vol_lots": 589.64,
       "odd_vol_lots": 90.96,
       "odd_trades": 19282
     },
